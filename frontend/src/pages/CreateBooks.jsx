@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import Spinner from '../components/Spinner'
 import BackButton from '../components/BackButton'
+import { useSnackbar } from 'notistack'
 
 const CreateBooks = () => {
   const [title, setTitle] = useState('')
@@ -12,6 +13,8 @@ const CreateBooks = () => {
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSaveBook = () => {
     const data = {
@@ -24,17 +27,19 @@ const CreateBooks = () => {
       .post('http://localhost:5555/books', data)
       .then(() => {
         setLoading(false)
+        enqueueSnackbar('Book created successfully', { variant: 'success' })
         navigate('/')
       })
       .catch((error) => {
         setLoading(false)
-        alert('an error occured, check console for details')
+        enqueueSnackbar('Error: an error occured, check console for details', { variant: 'Error' })
         console.log(error)
       })
   }
 
   return (
     <div className='p-4'>
+      <BackButton />
       <h1 className='text-3xl my-4'>Create Book</h1>
       {loading ? <Spinner/> : ''}
       <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
